@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PassIn.Application.UseCases.Events.Register;
 using PassIn.Communication.Requests;
+using PassIn.Communication.Responses;
 
 namespace PassIn.Api.Controllers;
 [Route("api/[controller]")]
@@ -8,12 +9,25 @@ namespace PassIn.Api.Controllers;
 public class EventsController : ControllerBase
 {
     [HttpPost]
+    [ProducesResponseType(typeof(ResponseResgisteredEventJson), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
     public IActionResult Register([FromBody] RequestEventJson request)
     {
-        var useCase = new RegisterEventUseCase();
+        try
+        {
+            var useCase = new RegisterEventUseCase();
 
-        useCase.Execute();
+            useCase.Execute(request);
 
-        return Created();
+            return Created();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new ResponseErrorJson(ex.Message));
+        }
+        catch 
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new ResponseErrorJson("Unknown error"));
+        }
     }
 }
