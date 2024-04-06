@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace PassIn.Infrastructure.Entities;
+﻿namespace PassIn.Infrastructure.Entities;
 public class Attendee
 {
     public Guid Id { get; set; } = Guid.NewGuid();
